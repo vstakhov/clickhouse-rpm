@@ -223,7 +223,6 @@ fi
 /etc/security/limits.d/clickhouse.conf
 /usr/bin/clickhouse-server
 /usr/bin/clickhouse
-/usr/share/clickhouse
 
 %files client
 /etc/clickhouse-client/config.xml
