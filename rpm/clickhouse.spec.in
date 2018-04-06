@@ -94,9 +94,10 @@ cp debian/clickhouse-server.init $RPM_BUILD_ROOT/etc/init.d/clickhouse-server
 mkdir -p $RPM_BUILD_ROOT/etc/cron.d
 cp debian/clickhouse-server.cron.d $RPM_BUILD_ROOT/etc/cron.d/clickhouse-server
 
-mkdir -p $RPM_BUILD_ROOT/usr/share/clickhouse/bin $RPM_BUILD_ROOT/usr/share/clickhouse/headers
+#mkdir -p $RPM_BUILD_ROOT/usr/share/clickhouse/bin $RPM_BUILD_ROOT/usr/share/clickhouse/headers
 #debian/copy_clang_binaries.sh $RPM_BUILD_ROOT/usr/share/clickhouse/bin/
 #./copy_headers.sh . $RPM_BUILD_ROOT/usr/share/clickhouse/headers
+rm -fr  $RPM_BUILD_ROOT/usr/share/clickhouse-test
 
 %clean
 rm -rf $RPM_BUILD_ROOT
