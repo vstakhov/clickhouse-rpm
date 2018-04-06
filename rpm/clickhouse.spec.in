@@ -26,7 +26,7 @@ Version: @CH_VERSION@
 Release: 4%{?dist}
 License: Apache License 2.0
 Group: Applications/Databases
-Source: ClickHouse-@CH_VERSION@-@CH_TAG@.zip
+Source: ClickHouse-@CH_VERSION@-@CH_TAG@.tar
 Url: https://clickhouse.yandex/
 BuildRoot: %{_tmppath}/%{name}-%{version}-build
 
@@ -61,7 +61,7 @@ Summary: %{name} compressor binary
 This package contains compressor utility for ClickHouse DBMS.
 
 %prep
-%setup -q -n ClickHouse-%{version}-@CH_TAG@
+%setup -q -n ClickHouse-@CH_FULL_TAG@
 CH_VERSION=@CH_VERSION@
 CH_VERSION_ARR=(${CH_VERSION//./ })
 sed -i -- "s/VERSION_REVISION .*)/VERSION_REVISION ${CH_VERSION_ARR[2]})/g" dbms/cmake/version.cmake
@@ -71,7 +71,7 @@ sed -i -- "s/VERSION_DESCRIBE .*)/VERSION_DESCRIBE v@CH_VERSION@-@CH_TAG@)/g" db
 rm -rf build
 mkdir build
 cd build
-cmake .. -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_INSTALL_PREFIX=/usr
+cmake3 .. -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_INSTALL_PREFIX=/usr
 make %{?_smp_mflags}
 cd ..
 

@@ -34,6 +34,8 @@ CH_VERSION="${CH_VERSION:-1.1.git}"
 # Git tag marker (stable/testing)
 CH_TAG="${CH_TAG:-0771874}"
 
+CH_FULL_TAG="${CH_FULL_TAG:-07718746959cfc85fcb8ffd29d97c8e217b082a2}"
+
 # SSH username used to publish built packages
 REPO_USER="${REPO_USER:-clickhouse}"
 
@@ -54,35 +56,27 @@ RHEL_VERSION=`rpm -qa --queryformat '%{VERSION}\n' '(redhat|sl|slf|centos|oracle
 
 function prepare_dependencies {
 
-if [ ! -d lib ]; then
-  mkdir lib
-fi
-
-sudo rm -rf lib/*
-
-cd lib
-
 # Install development packages
+
+# Required repos:
+# CentOS 6:
+# - epel-6
+# - https://copr.fedorainfracloud.org/coprs/alonid/llvm-5.0.1/repo/epel-6/alonid-llvm-5.0.1-epel-6.repo
+# - https://copr.fedorainfracloud.org/coprs/whosthere/boost/repo/epel-6/whosthere-boost-epel-6.repo
+# CentOS 7:
+# - epel-7
+# - https://copr.fedorainfracloud.org/coprs/alonid/llvm-5.0.1/repo/epel-7/alonid-llvm-5.0.1-epel-7.repo
+# - https://copr.fedorainfracloud.org/coprs/whosthere/boost/repo/epel-7/whosthere-boost-epel-7.repo
 sudo yum -y install rpm-build redhat-rpm-config gcc-c++ readline-devel\
   unixODBC-devel subversion python-devel git wget openssl-devel m4 createrepo\
   libicu-devel zlib-devel libtool-ltdl-devel \
-  cmake3 clang-5.0.1 libcxx-5.0.1-devel git
+  cmake3 clang-5.0.1 libcxx-5.0.1-devel git boost
 
-
-
-# Use GCC 6 for builds
+# Use Clang 5
 export PATH=/opt/llvm-5.0.1/bin:${PATH}
 export CC=/opt/llvm-5.0.1/bin/clang
-export CXX=/opt/llvm-5.0.1/bin/clamg++
+export CXX=/opt/llvm-5.0.1/bin/clang++
 
-# Install Boost
-wget http://downloads.sourceforge.net/project/boost/boost/1.62.0/boost_1_62_0.tar.bz2
-tar xf boost_1_62_0.tar.bz2
-cd boost_1_62_0
-./bootstrap.sh
-./b2 --toolset=clang-5 -j $THREADS
-sudo PATH=$PATH ./b2 install --toolset=clang-5 -j $THREADS
-cd ..
 
 }
 
@@ -93,18 +87,36 @@ rm -f ~/rpmbuild/RPMS/x86_64/clickhouse*
 rm -f ~/rpmbuild/SRPMS/clickhouse*
 rm -f rpm/*.zip
 
+TAR=~/rpmbuild/SOURCES/ClickHouse-$CH_VERSION-$CH_TAG.tar
+
 # Configure RPM build environment
 mkdir -p ~/rpmbuild/{BUILD,RPMS,SOURCES,SPECS,SRPMS}
 echo '%_topdir %(echo $HOME)/rpmbuild
 %_smp_mflags  -j'"$THREADS" > ~/.rpmmacros
+rm -f ${TAR}
 
 # Create RPM packages
 cd rpm
-sed -e s/@CH_VERSION@/$CH_VERSION/ -e s/@CH_TAG@/$CH_TAG/ clickhouse.spec.in > clickhouse.spec
-wget -O ~/rpmbuild/SOURCES/ClickHouse-$CH_VERSION-$CH_TAG.zip https://github.com/yandex/ClickHouse/archive/${CH_TAG}.zip
+sed -e s/@CH_VERSION@/$CH_VERSION/ -e s/@CH_TAG@/$CH_TAG/ -e s/@CH_FULL_TAG@/${CH_FULL_TAG}/ clickhouse.spec.in > clickhouse.spec
+if [ -d ClickHouse ] ; then 
+  (cd ClickHouse && git checkout ${CH_FULL_TAG})
+else
+  git clone --recursive https://github.com/yandex/ClickHouse
+  (cd ClickHouse && git checkout ${CH_FULL_TAG})
+fi
+(cd ClickHouse && \
+    git archive --format=tar --prefix=ClickHouse-${CH_FULL_TAG}/ HEAD > ${TAR} && \
+    echo Running git archive submodules... && \
+    p=`pwd` && (echo .; git submodule foreach) | while read entering path ; do \
+        temp="${path%\'}"; \
+        temp="${temp#\'}"; \
+        path=$temp; \
+        [ "$path" = "" ] && continue; \
+        (cd $path && git archive --prefix=ClickHouse-${CH_FULL_TAG}/$path/ HEAD > ~/rpmbuild/tmp.tar && tar --concatenate --file=${TAR} ~/rpmbuild/tmp.tar && rm -f ~/rpmbuild/tmp.tar ); \
+done) 
 rpmbuild -bs clickhouse.spec
 rpmbuild -bb clickhouse.spec
-
+cd -
 }
 
 if [[ "$1" != "publish_only"  && "$1" != "build_only" ]]; then
