@@ -98,6 +98,19 @@ cp debian/clickhouse-server.cron.d $RPM_BUILD_ROOT/etc/cron.d/clickhouse-server
 #debian/copy_clang_binaries.sh $RPM_BUILD_ROOT/usr/share/clickhouse/bin/
 #./copy_headers.sh . $RPM_BUILD_ROOT/usr/share/clickhouse/headers
 rm -fr  $RPM_BUILD_ROOT/usr/share/clickhouse-test
+rm -f $RPM_BUILD_ROOT/etc/clickhouse-client/client-test.xml
+rm -f $RPM_BUILD_ROOT/etc/clickhouse-server/server-test.xml
+rm -f $RPM_BUILD_ROOT/usr/bin/clickhouse-benchmark
+rm -f $RPM_BUILD_ROOT/usr/bin/clickhouse-clang
+rm -f $RPM_BUILD_ROOT/usr/bin/clickhouse-copier
+rm -f $RPM_BUILD_ROOT/usr/bin/clickhouse-extract-from-config
+rm -f $RPM_BUILD_ROOT/usr/bin/clickhouse-format
+rm -f $RPM_BUILD_ROOT/usr/bin/clickhouse-lld
+rm -f $RPM_BUILD_ROOT/usr/bin/clickhouse-local
+rm -f $RPM_BUILD_ROOT/usr/bin/clickhouse-performance-test
+rm -f $RPM_BUILD_ROOT/usr/bin/clickhouse-report
+rm -f $RPM_BUILD_ROOT/usr/bin/clickhouse-test
+rm -f $RPM_BUILD_ROOT/usr/bin/clickhouse-test-server
 
 %clean
 rm -rf $RPM_BUILD_ROOT
