@@ -62,16 +62,16 @@ This package contains compressor utility for ClickHouse DBMS.
 
 %prep
 %setup -q -n ClickHouse-@CH_FULL_TAG@
-CH_VERSION=@CH_VERSION@
-CH_VERSION_ARR=(${CH_VERSION//./ })
-sed -i -- "s/VERSION_REVISION .*)/VERSION_REVISION ${CH_VERSION_ARR[2]})/g" dbms/cmake/version.cmake
-sed -i -- "s/VERSION_DESCRIBE .*)/VERSION_DESCRIBE v@CH_VERSION@-@CH_TAG@)/g" dbms/cmake/version.cmake
+#CH_VERSION=@CH_VERSION@
+#CH_VERSION_ARR=(${CH_VERSION//./ })
+#sed -i -- "s/VERSION_REVISION .*)/VERSION_REVISION ${CH_VERSION_ARR[2]})/g" dbms/cmake/version.cmake
+#sed -i -- "s/VERSION_DESCRIBE .*)/VERSION_DESCRIBE v@CH_VERSION@-@CH_TAG@)/g" dbms/cmake/version.cmake
 
 %build
 rm -rf build
 mkdir build
 cd build
-cmake3 .. -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_INSTALL_PREFIX=/usr
+cmake3 .. -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_INSTALL_PREFIX=/usr -DENABLE_CAPNP=0 -DENABLE_RDKAFKA=0 -DENABLE_EMBEDDED_COMPILER=0 -DENABLE_TESTS=0  -DENABLE_UNWIND=0 -DENABLE_MYSQL=0
 make %{?_smp_mflags}
 cd ..
 
@@ -82,7 +82,7 @@ DAEMONS="clickhouse clickhouse-compressor clickhouse-client clickhouse-server"
 
 cd build
 for daemon in $DAEMONS; do\
-	DESTDIR=$RPM_BUILD_ROOT cmake -DCOMPONENT=$daemon -P cmake_install.cmake;\
+	DESTDIR=$RPM_BUILD_ROOT cmake3 -DCOMPONENT=$daemon -P cmake_install.cmake;\
 done
 cd ..
 
@@ -95,8 +95,8 @@ mkdir -p $RPM_BUILD_ROOT/etc/cron.d
 cp debian/clickhouse-server.cron.d $RPM_BUILD_ROOT/etc/cron.d/clickhouse-server
 
 mkdir -p $RPM_BUILD_ROOT/usr/share/clickhouse/bin $RPM_BUILD_ROOT/usr/share/clickhouse/headers
-debian/copy_clang_binaries.sh $RPM_BUILD_ROOT/usr/share/clickhouse/bin/
-./copy_headers.sh . $RPM_BUILD_ROOT/usr/share/clickhouse/headers
+#debian/copy_clang_binaries.sh $RPM_BUILD_ROOT/usr/share/clickhouse/bin/
+#./copy_headers.sh . $RPM_BUILD_ROOT/usr/share/clickhouse/headers
 
 %clean
 rm -rf $RPM_BUILD_ROOT

@@ -46,7 +46,7 @@ REPO_SERVER="${REPO_SERVER:-10.81.1.162}"
 REPO_ROOT="${REPO_ROOT:-/var/www/html/repos/clickhouse}"
 
 # Detect number of threads
-export THREADS=4
+export THREADS=$(grep -c ^processor /proc/cpuinfo)
 
 # Build most libraries using default GCC
 export PATH=${PATH/"/usr/local/bin:"/}:/usr/local/bin
@@ -70,18 +70,13 @@ function prepare_dependencies {
 sudo yum -y install rpm-build redhat-rpm-config gcc-c++ readline-devel\
   unixODBC-devel subversion python-devel git wget openssl-devel m4 createrepo\
   libicu-devel zlib-devel libtool-ltdl-devel \
-  cmake3 clang-5.0.1 libcxx-5.0.1-devel git boost
-
-# Use Clang 5
-export PATH=/opt/llvm-5.0.1/bin:${PATH}
-export CC=/opt/llvm-5.0.1/bin/clang
-export CXX=/opt/llvm-5.0.1/bin/clang++
-
+  cmake3 centos-release-scl devtoolset-7
 
 }
 
 function make_packages {
 
+source /opt/rh/devtoolset-7/enable
 # Clean up after previous run
 rm -f ~/rpmbuild/RPMS/x86_64/clickhouse*
 rm -f ~/rpmbuild/SRPMS/clickhouse*
