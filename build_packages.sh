@@ -61,12 +61,8 @@ function prepare_dependencies {
 # Required repos:
 # CentOS 6:
 # - epel-6
-# - https://copr.fedorainfracloud.org/coprs/alonid/llvm-5.0.1/repo/epel-6/alonid-llvm-5.0.1-epel-6.repo
-# - https://copr.fedorainfracloud.org/coprs/whosthere/boost/repo/epel-6/whosthere-boost-epel-6.repo
 # CentOS 7:
 # - epel-7
-# - https://copr.fedorainfracloud.org/coprs/alonid/llvm-5.0.1/repo/epel-7/alonid-llvm-5.0.1-epel-7.repo
-# - https://copr.fedorainfracloud.org/coprs/whosthere/boost/repo/epel-7/whosthere-boost-epel-7.repo
 sudo yum -y install rpm-build redhat-rpm-config gcc-c++ readline-devel\
   unixODBC-devel subversion python-devel git wget openssl-devel m4 createrepo\
   libicu-devel zlib-devel libtool-ltdl-devel \
