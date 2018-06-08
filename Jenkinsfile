@@ -34,7 +34,7 @@ pipeline {
       
       steps {
        sh 'whoami && pwd && ls -l'
-       //sh 'sh build_packages.sh '
+
       }
     }
   }
