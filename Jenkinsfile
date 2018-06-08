@@ -24,12 +24,13 @@ pipeline {
     }
 
     stage('Create rpms') {
-      docker { 
-        image '$tag'
-        args '-v ${PWD}:/root -w /root'
-        reuseNode true
-      } 
+
       steps {
+        docker { 
+          image '$tag'
+          args '-v ${PWD}:/root -w /root'
+          reuseNode true
+      } 
        sh 'cd /root; sh build_packages.sh '
       }
     }
