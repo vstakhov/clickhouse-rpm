@@ -33,7 +33,7 @@ pipeline {
       }
       
       steps {
-       sh 'cd /root; sh build_packages.sh '
+       sh 'pwd; ls -l; cd /root; sh build_packages.sh '
       }
     }
   }
