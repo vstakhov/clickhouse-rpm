@@ -24,13 +24,15 @@ pipeline {
     }
 
     stage('Create rpms') {
-
-      steps {
+      agent {
         docker { 
           image '$tag'
           args '-v ${PWD}:/root -w /root'
           reuseNode true
-      } 
+        } 
+      }
+      
+      steps {
        sh 'cd /root; sh build_packages.sh '
       }
     }
