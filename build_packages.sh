@@ -63,6 +63,8 @@ function prepare_dependencies {
 # - epel-6
 # CentOS 7:
 # - epel-7
+yum -y install centos-release-scl
+yum-config-manager --enable rhel-server-rhscl-7-rpms
 yum -y install rpm-build redhat-rpm-config gcc-c++ readline-devel\
   unixODBC-devel subversion python-devel git wget openssl-devel m4 createrepo\
   libicu-devel zlib-devel libtool-ltdl-devel \
