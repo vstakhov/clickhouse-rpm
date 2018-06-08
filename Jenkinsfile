@@ -33,7 +33,8 @@ pipeline {
       }
       
       steps {
-       sh 'pwd; ls -l; cd /root; sh build_packages.sh '
+       sh 'whoami && pwd && ls -l'
+       //sh 'sh build_packages.sh '
       }
     }
   }
