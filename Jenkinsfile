@@ -33,7 +33,7 @@ pipeline {
       }
       
       steps {
-       sh 'whoami && pwd && ls -l'
+       app.inside { sh 'whoami && pwd && ls -l' }
 
       }
     }
