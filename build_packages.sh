@@ -63,7 +63,7 @@ function prepare_dependencies {
 # - epel-6
 # CentOS 7:
 # - epel-7
-sudo yum -y install rpm-build redhat-rpm-config gcc-c++ readline-devel\
+yum -y install rpm-build redhat-rpm-config gcc-c++ readline-devel\
   unixODBC-devel subversion python-devel git wget openssl-devel m4 createrepo\
   libicu-devel zlib-devel libtool-ltdl-devel \
   cmake3 centos-release-scl devtoolset-7
