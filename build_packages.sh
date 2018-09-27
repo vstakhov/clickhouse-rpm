@@ -29,14 +29,14 @@
 set -e
 
 # Git version of ClickHouse that we package
-CH_VERSION="${CH_VERSION:-1.1.git}"
+CH_VERSION="${CH_VERSION:-18.14.0.git}"
 
 # Git tag marker (stable/testing)
 #CH_TAG="${CH_TAG:-0771874}"
 
 #CH_FULL_TAG="${CH_FULL_TAG:-07718746959cfc85fcb8ffd29d97c8e217b082a2}"
 
-CH_FULL_TAG="${CH_FULL_TAG:-f483e4cb051e0ccb8f3866c609754fce9fa9034f}"
+CH_FULL_TAG="${CH_FULL_TAG:-ca465cd20bf99c60f93f4e89c2db875443bc7a65}"
 CH_TAG=`echo $CH_FULL_TAG | head -c 7`
 
 # SSH username used to publish built packages
