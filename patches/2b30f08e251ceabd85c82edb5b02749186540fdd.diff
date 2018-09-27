@@ -1,0 +1,13 @@
+diff --git a/contrib/zlib/zlib.h b/contrib/zlib/zlib.h
+index af1ab730..9a859768 100644
+--- a/contrib/zlib/zlib.h
++++ b/contrib/zlib/zlib.h
+@@ -32,7 +32,7 @@
+ 
+ #include <stdint.h>
+ #include <stdarg.h>
+-#include "zconf.h"
++#include <zconf.h>
+ 
+ #ifdef __cplusplus
+ extern "C" {
