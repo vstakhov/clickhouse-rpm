@@ -92,12 +92,24 @@ echo '%_topdir %(echo $HOME)/rpmbuild
 rm -f ${TAR}
 
 # Create RPM packages
-(cd rpm && sed -e s/@CH_VERSION@/$CH_VERSION/ -e s/@CH_TAG@/$CH_TAG/ -e s/@CH_FULL_TAG@/${CH_FULL_TAG}/ clickhouse.spec.in > clickhouse.spec)
+cd rpm
+sed -e s/@CH_VERSION@/$CH_VERSION/ -e s/@CH_TAG@/$CH_TAG/ -e s/@CH_FULL_TAG@/${CH_FULL_TAG}/ clickhouse.spec.in > clickhouse.spec
 if [ -d ClickHouse ] ; then 
   (cd ClickHouse && git checkout ${CH_FULL_TAG})
 else
   git clone --recursive https://github.com/yandex/ClickHouse
   (cd ClickHouse && git checkout ${CH_FULL_TAG})
+fi
+# Apply patches
+if [ -d ../patches/ ] ; then
+  shopt -s nullglob
+  for p in ../patches/* ; do
+    echo "Applying patch $p"
+    ( cd ClickHouse && patch -p1 < $p )
+    if [ $? -ne 0 ] ; then
+      exit 1
+    fi
+  done
 fi
 (cd ClickHouse && \
     git archive --format=tar --prefix=ClickHouse-${CH_FULL_TAG}/ HEAD > ${TAR} && \
@@ -110,17 +122,6 @@ fi
         (cd $path && git archive --prefix=ClickHouse-${CH_FULL_TAG}/$path/ HEAD > ~/rpmbuild/tmp.tar && tar --concatenate --file=${TAR} ~/rpmbuild/tmp.tar && rm -f ~/rpmbuild/tmp.tar ); \
 done) 
 
-# Apply patches
-if [ -d patches/ ] ; then
-  shopt -s nullglob
-  for p in patches/* ; do
-    echo "Applying patch $p"
-    ( cd ClickHouse && patch -p1 < $p )
-    if [ $? -ne 0 ] ; then
-      exit 1
-    fi
-  done
-fi
 
 rpmbuild -bs clickhouse.spec
 rpmbuild -bb clickhouse.spec
